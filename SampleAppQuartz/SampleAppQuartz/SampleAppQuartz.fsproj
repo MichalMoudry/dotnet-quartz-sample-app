@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <UserSecretsId>dotnet-SampleAppQuartz-B73F3208-91AF-44BF-8BB0-961D5E7665A6</UserSecretsId>
+    </PropertyGroup>
+
+
+    <ItemGroup>
+        <Compile Include="Worker.fs"/>
+        <Compile Include="Jobs\HelloJob.fs" />
+        <Compile Include="Program.fs"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1"/>
+        <PackageReference Include="Quartz" Version="3.7.0" />
+        <PackageReference Include="Quartz.Extensions.Hosting" Version="3.7.0" />
+    </ItemGroup>
+</Project>
