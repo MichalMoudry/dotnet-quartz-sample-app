@@ -3,14 +3,9 @@ namespace SampleAppQuartz
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
 open Quartz
-open SampleAppQuartz.Jobs.HelloJob
+open SampleAppQuartz.Jobs
 
 module Program =
-    (*let createHostBuilder args =
-        Host.CreateDefaultBuilder(args)
-            .ConfigureServices(fun hostContext services ->
-                services.AddHostedService<Worker>() |> ignore)*)
-
     let createHostBuilder args =
         Host.CreateDefaultBuilder(args)
             .ConfigureServices(
@@ -25,6 +20,7 @@ module Program =
 
     [<EntryPoint>]
     let main args =
+        Dapper.FSharp.SQLite.OptionTypes.register()
         let builder = createHostBuilder(args).Build()
         
         let schedulerFactory =
@@ -37,20 +33,11 @@ module Program =
 
         let helloJob =
             JobBuilder
-                .Create<HelloJob>()
+                .Create<JobTypes.HelloJob>()
                 .WithIdentity("hello-job", "default")
                 .Build()
-        let defaultTrigger =
-            TriggerBuilder
-                .Create()
-                .WithIdentity("default-trigger", "default")
-                .StartNow()
-                .WithSimpleSchedule(fun i ->
-                    i.WithIntervalInSeconds(5).RepeatForever() |> ignore
-                )
-                .Build()
         
-        scheduler.ScheduleJob(helloJob, defaultTrigger)
+        scheduler.ScheduleJob(helloJob, Triggers.HelloJobTrigger)
             |> Async.AwaitTask
             |> Async.RunSynchronously
             |> ignore
