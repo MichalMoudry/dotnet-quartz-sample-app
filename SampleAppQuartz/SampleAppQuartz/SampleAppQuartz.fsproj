@@ -7,9 +7,10 @@
 
 
     <ItemGroup>
-        <Compile Include="Domain\JobModel.fs" />
+        <Compile Include="Domain\Models.fs" />
         <Compile Include="Jobs\JobTypes.fs" />
         <Compile Include="Jobs\Triggers.fs" />
+        <Compile Include="Jobs\Scheduler.fs" />
         <Compile Include="Program.fs"/>
     </ItemGroup>
 

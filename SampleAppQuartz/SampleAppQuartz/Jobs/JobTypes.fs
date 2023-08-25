@@ -1,29 +1,22 @@
 module SampleAppQuartz.Jobs.JobTypes
 
-open System
 open System.Threading.Tasks
 open Quartz
-open SampleAppQuartz.Domain
-
-/// An abstract class representing an entity in the system.
-[<AbstractClass>]
-type Entity() =
-    let id: Guid = Guid.NewGuid()
-    member this.Id = id
+open SampleAppQuartz.Domain.Models
 
 type ISampleJob =
     inherit IJob
-    abstract member Type: JobModel.JobType
+    abstract member Type: JobType
     abstract member Name: string
 
 /// A simple job that says 'hello!'.
 type HelloJob() =
     inherit Entity()
     interface ISampleJob with
-        member this.Execute _ =
+        member _.Execute _ =
             printfn "Hello!"
             Task.FromResult()
-        member this.Type = JobModel.JobType.HelloJob
+        member _.Type = JobType.HelloJob
         member this.Name = nameof(this)
 
 type SqliteInsertJob() =
@@ -31,7 +24,7 @@ type SqliteInsertJob() =
     interface ISampleJob with
         member this.Execute _ =
             Task.FromResult()
-        member this.Type = JobModel.JobType.SqliteInsertJob
+        member _.Type = JobType.SqliteInsertJob
         member this.Name = nameof(this)
 
 type SqliteReadJob() =
@@ -39,5 +32,12 @@ type SqliteReadJob() =
     interface ISampleJob with
         member this.Execute _ =
             Task.FromResult()
-        member this.Type = JobModel.JobType.SqliteReadJob
+        member _.Type = JobType.SqliteReadJob
         member this.Name = nameof(this)
+
+/// Method for simplifying job building.
+let BuildJob<'T when 'T :> IJob> name group =
+    JobBuilder
+        .Create<'T>()
+        .WithIdentity(name, group)
+        .Build()

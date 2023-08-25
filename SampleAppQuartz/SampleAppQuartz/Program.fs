@@ -9,7 +9,7 @@ module Program =
     let createHostBuilder args =
         Host.CreateDefaultBuilder(args)
             .ConfigureServices(
-                fun ctx services ->
+                fun _ services ->
                 (
                     services
                         .AddQuartz()
@@ -24,23 +24,15 @@ module Program =
         let builder = createHostBuilder(args).Build()
         
         let schedulerFactory =
-            builder.Services
+            builder
+                .Services
                 .GetRequiredService<ISchedulerFactory>()
         let scheduler =
             schedulerFactory.GetScheduler()
             |> Async.AwaitTask
             |> Async.RunSynchronously
 
-        let helloJob =
-            JobBuilder
-                .Create<JobTypes.HelloJob>()
-                .WithIdentity("hello-job", "default")
-                .Build()
-        
-        scheduler.ScheduleJob(helloJob, Triggers.HelloJobTrigger)
-            |> Async.AwaitTask
-            |> Async.RunSynchronously
-            |> ignore
+        Scheduler.ScheduleJobs(scheduler)
         builder.Run()
 
         0 // exit code
