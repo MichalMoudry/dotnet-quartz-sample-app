@@ -11,7 +11,6 @@ type ISampleJob =
 
 /// A simple job that says 'hello!'.
 type HelloJob() =
-    inherit Entity()
     interface ISampleJob with
         member _.Execute _ =
             printfn "Hello!"
@@ -20,7 +19,6 @@ type HelloJob() =
         member this.Name = nameof(this)
 
 type SqliteInsertJob() =
-    inherit Entity()
     interface ISampleJob with
         member this.Execute _ =
             Task.FromResult()
@@ -28,7 +26,6 @@ type SqliteInsertJob() =
         member this.Name = nameof(this)
 
 type SqliteReadJob() =
-    inherit Entity()
     interface ISampleJob with
         member this.Execute _ =
             Task.FromResult()

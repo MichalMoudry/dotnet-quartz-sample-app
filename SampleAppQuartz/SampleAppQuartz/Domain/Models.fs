@@ -2,12 +2,6 @@ module SampleAppQuartz.Domain.Models
 
 open System
 
-/// An abstract class representing an entity in the system.
-[<AbstractClass>]
-type Entity() =
-    let id: Guid = Guid.NewGuid()
-    member _.Id = id
-
 /// An enumeration representing job's type.
 type JobType =
     | HelloJob = 0
@@ -16,7 +10,7 @@ type JobType =
 
 /// A type representing a result of a specific job.
 type JobResult = {
-    Id: Guid
+    Id: int
     JobName: string
     JobType: JobType
     StartDate: DateTime
