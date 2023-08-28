@@ -3,14 +3,26 @@ module SampleAppQuartz.Jobs.JobTypes
 open System.Threading.Tasks
 open Quartz
 open SampleAppQuartz.Database
+open System.Data
+open System
+open Quartz.Spi
 
 type ISampleJob =
     inherit IJob
     abstract member Type: Model.JobType
     abstract member Name: string
 
-type IDbSampleJob =
-    inherit ISampleJob
+
+/// A custom job factory that has DI capabilities.
+type Factory(serviceProvider: IServiceProvider) =
+    let _serviceProvider = serviceProvider
+    interface IJobFactory with
+        member this.NewJob(bundle: TriggerFiredBundle, scheduler: IScheduler) =
+            Activator.CreateInstance(bundle.JobDetail.JobType) :?> IJob
+        member this.ReturnJob(job: Quartz.IJob) =
+            let disposable = job :?> IDisposable
+            disposable.Dispose()
+
 
 /// A simple job that says 'hello!'.
 type HelloJob() =
@@ -21,29 +33,25 @@ type HelloJob() =
         member _.Type = Model.JobType.HelloJob
         member this.Name = nameof(this)
 
+
 type SqliteInsertJob() =
-    interface IDbSampleJob with
-        member this.Execute _ =
+    interface ISampleJob with
+        member _.Execute _ =
             Task.FromResult()
         member _.Type = Model.JobType.SqliteInsertJob
         member this.Name = nameof(this)
 
+
 type SqliteReadJob() =
-    interface IDbSampleJob with
+    interface ISampleJob with
         member this.Execute _ =
             Task.FromResult()
         member _.Type = Model.JobType.SqliteReadJob
         member this.Name = nameof(this)
 
+
 /// Method for simplifying job building.
 let BuildJob<'T when 'T :> IJob> name group =
-    JobBuilder
-        .Create<'T>()
-        .WithIdentity(name, group)
-        .Build()
-
-/// Method for building a job that has access to DB.
-let BuildJobWithDbContext<'T when 'T :> IDbSampleJob> name group conn =
     JobBuilder
         .Create<'T>()
         .WithIdentity(name, group)

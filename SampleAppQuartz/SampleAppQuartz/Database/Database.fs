@@ -26,7 +26,7 @@ type IInitializer =
 let GetInitializer(conn: IDbConnection) =
     {
         new IInitializer with
-            member i.InitJobResults () =
+            member _.InitJobResults () =
                 task {
                     Queries.CreateTablesQuery() |> conn.ExecuteAsync |> ignore
                     return ()

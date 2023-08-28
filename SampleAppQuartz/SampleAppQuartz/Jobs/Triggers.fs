@@ -35,7 +35,7 @@ let SqliteInsertJobTrigger() =
         "database",
         None,
         fun i ->
-            i.WithIntervalInMinutes(1)
+            i.WithIntervalInSeconds(15)
                 .RepeatForever()
                 |> ignore
     )

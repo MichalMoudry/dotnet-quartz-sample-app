@@ -13,7 +13,7 @@ module Program =
                 fun _ services ->
                 (
                     services
-                        .AddQuartz()
+                        .AddQuartz() // fun i -> i.UseJobFactory<JobTypes.Factory>()
                         .AddQuartzHostedService(fun options -> options.WaitForJobsToComplete <- true)
                         |> ignore
                 )
@@ -33,12 +33,12 @@ module Program =
             builder
                 .Services
                 .GetRequiredService<ISchedulerFactory>()
-        let scheduler =
-            schedulerFactory.GetScheduler()
+        schedulerFactory.GetScheduler()
             |> Async.AwaitTask
             |> Async.RunSynchronously
+            |> Scheduler.ScheduleJobs
+            |> Async.RunSynchronously
 
-        Scheduler.ScheduleJobs(scheduler, conn) |> Async.RunSynchronously
         builder.Run()
 
         0 // exit code

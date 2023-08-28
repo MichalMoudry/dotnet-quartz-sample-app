@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Worker">
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
@@ -21,6 +21,7 @@
         <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.10" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
         <PackageReference Include="Quartz" Version="3.7.0" />
+        <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.7.0" />
         <PackageReference Include="Quartz.Extensions.Hosting" Version="3.7.0" />
     </ItemGroup>
 </Project>

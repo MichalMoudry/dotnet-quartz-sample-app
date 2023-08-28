@@ -4,7 +4,7 @@ open System.Data
 open Quartz
 
 /// A method for scheduling all the sample jobs.
-let ScheduleJobs (scheduler: IScheduler, conn: IDbConnection) =
+let ScheduleJobs (scheduler: IScheduler) =
     async {
         scheduler.ScheduleJob(
             JobTypes.BuildJob<JobTypes.HelloJob> "hello-job" "default",
@@ -12,8 +12,7 @@ let ScheduleJobs (scheduler: IScheduler, conn: IDbConnection) =
         ) |> Async.AwaitTask |> ignore
 
         scheduler.ScheduleJob(
-            JobTypes.BuildJobWithDbContext<JobTypes.SqliteInsertJob>
-                "sqlite-insert-job" "database" conn,
+            JobTypes.BuildJob<JobTypes.SqliteInsertJob> "sqlite-insert-job" "database",
             Triggers.SqliteInsertJobTrigger()
         ) |> Async.AwaitTask |> ignore
     }
