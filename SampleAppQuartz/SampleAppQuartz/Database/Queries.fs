@@ -4,7 +4,7 @@
 module SampleAppQuartz.Database.Queries
 
 /// A method that returns a SQL query that creates all the tables in the DB.
-let createTablesQuery() =
+let CreateTablesQuery() =
     """
     CREATE TABLE IF NOT EXISTS
     JobResults (

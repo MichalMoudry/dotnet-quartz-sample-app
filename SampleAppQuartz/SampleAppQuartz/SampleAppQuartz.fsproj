@@ -7,9 +7,9 @@
 
 
     <ItemGroup>
-        <Compile Include="Domain\Models.fs" />
-        <Compile Include="Database\DbContext.fs" />
         <Compile Include="Database\Queries.fs" />
+        <Compile Include="Database\Database.fs" />
+        <Compile Include="Database\Model.fs" />
         <Compile Include="Jobs\JobTypes.fs" />
         <Compile Include="Jobs\Triggers.fs" />
         <Compile Include="Jobs\Scheduler.fs" />

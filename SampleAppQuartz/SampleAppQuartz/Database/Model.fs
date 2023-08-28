@@ -1,4 +1,4 @@
-module SampleAppQuartz.Domain.Models
+module SampleAppQuartz.Database.Model
 
 open System
 

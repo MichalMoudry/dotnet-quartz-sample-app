@@ -5,10 +5,8 @@ open Microsoft.Extensions.Hosting
 open Quartz
 open SampleAppQuartz.Database
 open SampleAppQuartz.Jobs
-open Dapper
 
 module Program =
-    open Microsoft.Data.Sqlite
     let createHostBuilder args =
         Host.CreateDefaultBuilder(args)
             .ConfigureServices(
@@ -23,15 +21,13 @@ module Program =
 
     [<EntryPoint>]
     let main args =
-        FSharp.SQLite.OptionTypes.register()
         let builder = createHostBuilder(args).Build()
-        use connection = new SqliteConnection("Data Source=sample_app.db")
-        connection.Open()
+        let conn = Database.GetConnection()
+        conn |> Database.SafeInit
 
-        connection.ExecuteAsync(Queries.createTablesQuery())
+        Database.GetInitializer(conn).InitJobResults()
             |> Async.AwaitTask
             |> Async.RunSynchronously
-            |> ignore
 
         let schedulerFactory =
             builder
@@ -42,7 +38,7 @@ module Program =
             |> Async.AwaitTask
             |> Async.RunSynchronously
 
-        Scheduler.ScheduleJobs(scheduler) |> Async.RunSynchronously
+        Scheduler.ScheduleJobs(scheduler, conn) |> Async.RunSynchronously
         builder.Run()
 
         0 // exit code
