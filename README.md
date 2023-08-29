@@ -1,8 +1,6 @@
-# F# Sample app - Quartz
-A repository with a sample .NET app using Quartz.NET library.
+# Sample scheduling app
+A repository with a sample app using in-process scheduling.
 
 ## Used libraries
-- Dapper.FSharp
-- Microsoft.Extensions.Hosting
-- Quartz
-- Quartz.Extensions.Hosting
+- schedule
+- SQLAlchemy
