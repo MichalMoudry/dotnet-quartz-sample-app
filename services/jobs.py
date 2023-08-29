@@ -2,7 +2,9 @@
 Module with background tasks.
 """
 
-from sqlalchemy import Connection
+from sqlalchemy import select, insert, Engine
+from sqlalchemy.orm import Session
+from database import model
 
 
 class HelloJob:
@@ -23,9 +25,11 @@ class SqlInsertJob:
     def __init__(self):
         self._job_name = "sql_insert_job"
 
-    def job(self, conn: Connection):
+    def job(self, engine: Engine):
         print(f"Executing => {self._job_name}")
-        print(conn.info)
+        session = Session(engine)
+        session.add(model.JobResult(self._job_name))
+        session.commit()
 
 
 class SqlReadJob:
@@ -35,6 +39,11 @@ class SqlReadJob:
     def __init__(self):
         self._job_name = "sql_read_job"
 
-    def job(self, conn: Connection):
+    def job(self, engine: Engine):
         print(f"Executing => {self._job_name}")
-        print(conn.info)
+        session = Session(engine)
+        stmt = select(model.JobResult).where(model.JobResult.job_name.is_("sql_insert_job"))
+        print(30 * "-")
+        for result in session.scalars(stmt):
+            print(result)
+        print(30 * "-")

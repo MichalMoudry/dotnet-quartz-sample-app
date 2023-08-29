@@ -13,8 +13,8 @@ if __name__ == "__main__":
 
     schedule.every(5).seconds.do(jobs.HelloJob().job)
     with engine.connect() as conn:
-        schedule.every(30).seconds.do(jobs.SqlReadJob().job, conn)
-        schedule.every(1).minute.do(jobs.SqlInsertJob().job, conn)
+        schedule.every(30).seconds.do(jobs.SqlReadJob().job, engine)
+        schedule.every(1).minute.do(jobs.SqlInsertJob().job, engine)
         while True:
             schedule.run_pending()
             time.sleep(1)
