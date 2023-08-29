@@ -2,42 +2,39 @@
 Module with background tasks.
 """
 
-from abc import ABC, abstractmethod
+from sqlalchemy import Connection
 
-class BaseJob(ABC):
+
+class HelloJob:
     """
-    A base class for job classes.
+    A class for a basic job that prints 'Hello from [job_name]!'.
     """
-    def __init__(self, job_name: str) -> None:
-        self._job_name = job_name
-    
-    @property
-    @abstractmethod
-    def job(self) -> (...):
-        """
-        A property containing code that will be executed.
-        """
-        pass
+    def __init__(self) -> None:
+        self._job_name = "hello_job"
+
+    def job(self):
+        print(f"Hello from {self._job_name}!")
 
 
-class HelloJob(BaseJob):
+class SqlInsertJob:
     """
-    A class for a basic job that prints 'Hello!'.
+    A class for a job that inserts a job result to the database.
     """
-    def __init__(self, job_name: str) -> None:
-        super().__init__(job_name)
+    def __init__(self):
+        self._job_name = "sql_insert_job"
+
+    def job(self, conn: Connection):
+        print(f"Executing => {self._job_name}")
+        print(conn.info)
 
 
-def hello_job():
+class SqlReadJob:
     """
-    A simple hello job that prints 'Hello!'.
+    A class for a job that reads the latest job result in the database.
     """
-    print("Hello!")
+    def __init__(self):
+        self._job_name = "sql_read_job"
 
-
-def sqlite_read_job():
-    ...
-
-
-def sqlite_insert_job():
-    ...
+    def job(self, conn: Connection):
+        print(f"Executing => {self._job_name}")
+        print(conn.info)
