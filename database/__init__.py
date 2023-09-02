@@ -1,7 +1,6 @@
 """
 Package with database layer for the sample app.
 """
-
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from .model import Entity

@@ -1,7 +1,6 @@
 """
 Module with database model classes.
 """
-
 from datetime import datetime
 from sqlalchemy import String, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase
@@ -16,7 +15,7 @@ class Entity(DeclarativeBase):
 class JobResult(Entity):
     __tablename__ = "job_results"
 
-    job_name: Mapped[str] = mapped_column(String(30))
+    job_name = mapped_column(String(30))
     run_date = mapped_column(TIMESTAMP())
 
     def __init__(self, job_name: str):
@@ -24,4 +23,4 @@ class JobResult(Entity):
         self.run_date = datetime.utcnow()
 
     def __repr__(self) -> str:
-        return f"JobResult(id={self.id!r}, job_name={self.job_name!r}, run_date={self.run_date!r})"
+        return f"JobResult(id={self.id!r}, job_name={self.job_name!r}, run_date={self.run_date:%Y-%m-%d %H:%M:%S%z})"

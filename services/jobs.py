@@ -1,8 +1,7 @@
 """
-Module with background tasks.
+Module with background task classes.
 """
-
-from abc import ABC
+from abc import ABC, abstractmethod
 from sqlalchemy import select
 from database import model, Session
 
@@ -11,7 +10,9 @@ class BaseJob(ABC):
     """
     A base class for all scheduled jobs.
     """
-    ...
+
+    @abstractmethod
+    def job(self): pass
 
 
 class HelloJob(BaseJob):
@@ -22,7 +23,7 @@ class HelloJob(BaseJob):
         self._job_name = "hello_job"
 
     def job(self):
-        print(f"Hello from {self._job_name}!")
+        print(f"Hello from {self._job_name}!\n")
 
 
 class SqlInsertJob(BaseJob):
@@ -50,9 +51,13 @@ class SqlReadJob(BaseJob):
     def job(self):
         print(f"\nExecuting => {self._job_name}")
         session = Session()
-        stmt = select(model.JobResult).where(model.JobResult.job_name.is_("sql_insert_job"))
+        stmt = (
+            select(model.JobResult)
+            .where(
+                model.JobResult.job_name.is_("sql_insert_job")
+            )
+        )
         print(30 * "-")
-        for result in session.scalars(stmt):
-            print(result)
+        for result in session.scalars(stmt): print(result)
         print(30 * "-")
         print(f"Ending => {self._job_name}")
