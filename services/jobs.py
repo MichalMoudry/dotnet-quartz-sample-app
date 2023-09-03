@@ -3,6 +3,7 @@ Module with background task classes.
 """
 from abc import ABC, abstractmethod
 from sqlalchemy import select
+from sqlalchemy.sql import text
 from database import model, Session
 
 
@@ -26,6 +27,24 @@ class HelloJob(BaseJob):
         print(f"Hello from {self._job_name}!\n")
 
 
+class SqlPrintTablesJobs(BaseJob):
+    """
+    A class for a job that prints all the tables in the database.
+    """
+    def __init__(self):
+        self._job_name = "sql_print_table_job"
+
+    def job(self):
+        session = Session()
+        print("Current table list:")
+        res = session.execute(
+            text("SELECT name FROM sqlite_schema WHERE type = 'table';")
+        )
+        for record in res:
+            print(record)
+        print("")
+
+
 class SqlInsertJob(BaseJob):
     """
     A class for a job that inserts a job result to the database.
@@ -34,11 +53,11 @@ class SqlInsertJob(BaseJob):
         self._job_name = "sql_insert_job"
 
     def job(self):
-        print(f"\nExecuting => {self._job_name}")
+        print(f"Executing => {self._job_name}")
         session = Session()
         session.add(model.JobResult(self._job_name))
         session.commit()
-        print(f"Ending => {self._job_name}")
+        print(f"Ending => {self._job_name}\n")
 
 
 class SqlReadJob(BaseJob):
@@ -49,7 +68,7 @@ class SqlReadJob(BaseJob):
         self._job_name = "sql_read_job"
 
     def job(self):
-        print(f"\nExecuting => {self._job_name}")
+        print(f"Executing => {self._job_name}")
         session = Session()
         stmt = (
             select(model.JobResult)
@@ -60,4 +79,4 @@ class SqlReadJob(BaseJob):
         print(30 * "-")
         for result in session.scalars(stmt): print(result)
         print(30 * "-")
-        print(f"Ending => {self._job_name}")
+        print(f"Ending => {self._job_name}\n")

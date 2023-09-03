@@ -15,7 +15,7 @@ class Entity(DeclarativeBase):
 class JobResult(Entity):
     __tablename__ = "job_results"
 
-    job_name = mapped_column(String(30))
+    job_name = mapped_column(String(120))
     run_date = mapped_column(TIMESTAMP())
 
     def __init__(self, job_name: str):
